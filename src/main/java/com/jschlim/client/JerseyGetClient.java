@@ -25,7 +25,6 @@ public class JerseyGetClient {
 				     + response.getStatus());
 			}
 			
-			
 			//perform get on placed employee
 			webR = client.resource("http://localhost:8080/JerseyHelloWorld/rest/json/employees/get/1");
 			
@@ -39,7 +38,7 @@ public class JerseyGetClient {
 			
 			String output = response.getEntity(String.class);
 			
-			System.out.println("Output from Server .... \n");
+			System.out.println("Output from Server ....");
 			System.out.println(output);
 			
 		} catch (Exception e) {

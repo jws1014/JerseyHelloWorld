@@ -21,13 +21,14 @@ public class JSONService {
 	@GET
 	@Path("/get/{param}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Employee getMsg( @PathParam("param2") Integer key ) {
+	public Response getMsg( @PathParam("param") Integer key ) {
 		
-		if ( m.get(key) != null ) {
-			
-			return m.get(key);
-		}
-		return null;
+		System.out.println(m.get(key));
+
+		return Response
+				.status(200)
+				.entity("Employee: " + m.get(key) + " id: " + key )
+				.build();
 	}
 	
 	@POST
