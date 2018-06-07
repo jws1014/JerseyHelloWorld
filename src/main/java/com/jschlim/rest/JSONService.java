@@ -14,7 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.jschlim.Employee;;
+import com.jschlim.Employee;
 
 @Path("/json/employees")
 public class JSONService {
@@ -37,7 +37,8 @@ public class JSONService {
 		String output = "";
 		for (Integer k : m.keySet()) {
 			
-			output += m.get(k) + "\n";
+			if ( m.get(k) != null )
+				output += m.get(k).toString();
 		}
 		
 		return Response.status(200).entity(output).build();
@@ -56,24 +57,45 @@ public class JSONService {
 	
 	@PUT
 	@Path("/{Employee}/{id}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updateEmployee( @PathParam("Employee") Employee eNew, @PathParam("id") Integer key ) {
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateEmployee( @PathParam("Employee") String name, @PathParam("id") Integer key ) {
 		
 		Employee eReplace = m.get(key);
-		String output = "Updated: " + eReplace + " to:\t"
-				+ "" + eNew;
-		eReplace = eNew;
+		String output = "Updated name: " + eReplace + " to: "
+				+ "" + name;
+		eReplace.setName(name);
 		
 		return Response.status(200).entity(output).build();
 	}
 	
 	@DELETE
-	@Path("/{Employee}/{id}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response deleteEmployee( @PathParam("Employee") Employee eDelete, @PathParam("id") Integer key ) {
+	@Path("/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteEmployee( @PathParam("id") Integer key ) {
 		
+		String name = m.get(key).getName();
 		m.put(key, null);
-		String output = "Deleted: " + eDelete;
+		String output = "Deleted: " + name;
+		
+		return Response.status(200).entity(output).build();
+	}
+	
+	@DELETE
+	@Path("/clear")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteAllEmployees() {
+		
+		int numDeleted = 0;
+		for (Integer k : m.keySet()) {
+			
+			if ( m.get(k) != null ) {
+				
+				m.put(k, null);
+				numDeleted += 1;
+			}
+		}
+		
+		String output = "Deleted " + numDeleted + " employees"; 
 		
 		return Response.status(200).entity(output).build();
 	}
