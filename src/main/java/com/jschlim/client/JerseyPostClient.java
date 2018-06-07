@@ -21,7 +21,7 @@ public class JerseyPostClient {
 				
 				String input = "{\"name\":\"Bill\", \"id\": " + i + "}";
 				
-				WebResource webR = client.resource("http://localhost:8080/JerseyHelloWorld/rest/json/employees/post");
+				WebResource webR = client.resource("http://localhost:8080/JerseyHelloWorld/rest/json/employees/");
 				
 				ClientResponse response = webR.type("application/json")
 						.post(ClientResponse.class, input);

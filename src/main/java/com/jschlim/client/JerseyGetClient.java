@@ -9,13 +9,11 @@ public class JerseyGetClient {
 	public static void main(String[] args) {
 		
 		try {
-			Client client = Client.create();
 			
 			//init map with employee at key 1
-			
+			Client client = Client.create();
 			String input = "{\"name\":\"Jim\", \"id\": 1}";
-			
-			WebResource webR = client.resource("http://localhost:8080/JerseyHelloWorld/rest/json/employees/post");
+			WebResource webR = client.resource("http://localhost:8080/JerseyHelloWorld/rest/json/employees/");
 			
 			ClientResponse response = webR.type("application/json")
 					.post(ClientResponse.class, input);
@@ -25,8 +23,9 @@ public class JerseyGetClient {
 				     + response.getStatus());
 			}
 			
+			
 			//perform get on placed employee
-			webR = client.resource("http://localhost:8080/JerseyHelloWorld/rest/json/employees/get/1");
+			webR = client.resource("http://localhost:8080/JerseyHelloWorld/rest/json/employees/1");
 			
 			response = webR.accept("application/json")
 					.get(ClientResponse.class);
