@@ -7,6 +7,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -24,16 +25,16 @@ public class HibernateService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response postEmployee(Employee employee) {
 
-		System.out.println("Service: Posting Employee ... ");
+		System.out.println("HibernateService: Posting Employee ... ");
 
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		
-		System.out.println("Service: begin transaction ... ");
+		//System.out.println("Service: begin transaction ... ");
 		session.beginTransaction();
 		
 
 		try {
-			System.out.println("Service: save employee ... ");
+			//System.out.println("Service: save employee ... ");
 			session.save(employee);
 			session.getTransaction().commit();
 		} catch (HibernateException e) {
@@ -44,13 +45,13 @@ public class HibernateService {
 			if ( session.getTransaction() != null ) 
 				session.getTransaction().rollback();
 			
-			System.out.println("Service: Post exception caught ... ");
+			//System.out.println("Service: Post exception caught ... ");
 			e.printStackTrace();
 		} finally {
 			session.close();
 		}
 		
-		String output = "Posted: " + employee + "\n";
+		String output = "HibernateService: Posted " + employee;
 
 		return Response.status(201).entity(output).build();
 	}
@@ -60,7 +61,7 @@ public class HibernateService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getEmployee(@PathParam("EmployeeID") Integer employeeID) {
 
-		System.out.println("Getting Employee " + employeeID + " ... ");
+		System.out.println("HibernateService: Getting Employee " + employeeID + " ... ");
 
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
@@ -80,8 +81,8 @@ public class HibernateService {
 			session.close();
 		}
 
-		System.out.println("Got: " + employee + "\n");
-		output = "Got: " + employee + "\n";
+		//System.out.println("Got: " + employee + "\n");
+		output = "HibernateService: Got " + employee;
 
 		return Response.status(200).entity(output).build();
 	}
@@ -91,6 +92,7 @@ public class HibernateService {
 	@Path("/{EmployeeID}")
 	public Response deleteEmployee(@PathParam("EmployeeID") Integer employeeID) {
 		
+		System.out.println("HibernateService: Deleting Employee ... " );
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
 
@@ -115,8 +117,44 @@ public class HibernateService {
 			session.close();
 		}
 		
-		output = "Deleted: " + employee + "\n";
+		output = "Deleted: " + employee;
 		return Response.status(200).entity(output).build();
 	}
 
+	@PUT
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response updateEmployee( Employee employee ) {
+		
+		System.out.println("HibernateService: Updating Employee ... ");
+
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		
+		System.out.println("HibernateService: Begin update transaction ... ");
+		session.beginTransaction();
+		
+
+		try {
+			System.out.println("HibernateService: Save or Update employee ... ");
+			session.saveOrUpdate(employee);
+			session.getTransaction().commit();
+		} catch (HibernateException e) {
+			
+			/* any exceptions thrown by Hibernate are FATAL, you have to roll back the transaction 
+			 * and close the current session immediately.
+			 */ 
+			if ( session.getTransaction() != null ) 
+				session.getTransaction().rollback();
+			
+			System.out.println("HibernateService: Update exception caught ... ");
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		String output = "HibernateService: Updated " + employee;
+
+		return Response.status(200).entity(output).build();
+	}
+	
 }
