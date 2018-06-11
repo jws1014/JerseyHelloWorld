@@ -23,9 +23,13 @@ public class HibernateUtil {
 	public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }
-    
-    public static void shutdown() {
-    	// Close caches and connection pools
-    	getSessionFactory().close();
-    }
+
+	public static void shutdown() {
+		// Close caches and connection pools
+		System.out.println("Shutting down connection to order history db");
+		getSessionFactory().close();
+		System.out
+				.println("Shutting down connection to order history db is closed : " + getSessionFactory().isClosed());
+
+	}
 }
