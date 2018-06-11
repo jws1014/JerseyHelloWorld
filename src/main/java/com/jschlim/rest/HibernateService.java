@@ -3,6 +3,8 @@ package com.jschlim.rest;
 import com.jschlim.Employee;
 import com.jschlim.persistence.HibernateUtil;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -130,13 +132,13 @@ public class HibernateService {
 
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		
-		System.out.println("HibernateService: Begin update transaction ... ");
+		//System.out.println("HibernateService: Begin update transaction ... ");
 		session.beginTransaction();
 		
 
 		try {
-			System.out.println("HibernateService: Save or Update employee ... ");
-			session.saveOrUpdate(employee);
+			//System.out.println("HibernateService: Save or Update employee ... ");
+			session.update(employee);
 			session.getTransaction().commit();
 		} catch (HibernateException e) {
 			
@@ -146,7 +148,7 @@ public class HibernateService {
 			if ( session.getTransaction() != null ) 
 				session.getTransaction().rollback();
 			
-			System.out.println("HibernateService: Update exception caught ... ");
+			//System.out.println("HibernateService: Update exception caught ... ");
 			e.printStackTrace();
 		} finally {
 			session.close();
@@ -157,4 +159,24 @@ public class HibernateService {
 		return Response.status(200).entity(output).build();
 	}
 	
+	@GET
+	@Path("/all")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response readAllEmployees() {
+		
+		System.out.println("HibernateSerice: Reading all Employees ... " );
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+		
+		List<Employee> emp = session.createQuery("FROM Employee").list();
+		session.close();
+		
+		String output = "List:\n";
+		for ( Employee e : emp ) {
+			
+			output += "[" + e.getId() + ", " + e.getName() + "]\n";
+		}
+		
+		return Response.status(200).entity(output).build();
+	}
 }

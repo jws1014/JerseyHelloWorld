@@ -2,13 +2,16 @@ package HibernateServiceTests;
 
 import static org.junit.Assert.*;
 
-import org.junit.Ignore;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
+//Sorts by method name
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class HibernateTests {
 
 	@Test
@@ -88,6 +91,24 @@ public class HibernateTests {
 		String output = response.getEntity(String.class);
 
 		System.out.println("HibernateTest: PUT output from HibernateService .... ");
+		System.out.println(output);
+	}
+	
+	@Test
+	public void readAllEmployeesReturns200() {
+		
+		System.out.println("\n--Starting test read all--");
+		Client client = Client.create();
+		WebResource webR = client.resource("http://localhost:8080/JerseyHelloWorld/rest/hibernate/all");
+		
+		ClientResponse response = webR.accept("application/json")
+				.get(ClientResponse.class);
+
+		assertTrue("Read all returns: " + response.getStatus(), response.getStatus() == 200);
+
+		String output = response.getEntity(String.class);
+
+		System.out.println("HibernateTest: READ ALL output from HibernateService .... ");
 		System.out.println(output);
 	}
 }
